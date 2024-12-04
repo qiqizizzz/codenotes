@@ -2744,7 +2744,32 @@ CSS 中有很多方式可以实现垂直居中对齐。 一个简单的方式就
 }
 ```
 
+### 图片、表单、文字对齐
 
+CSS 的 `vertical-align`属性使用场景:经常用于设置图片或者表单(行内块元素)和文字垂直对齐。
+
+官方解释:用于设置一个元素的垂直对齐方式，但是它只针对于行内元素或者行内块元素有效。
+
+(图片、表单都属于行内块元素，默认的`vertical-align`是基线对齐。)
+
+语法：
+
+```css
+vertical-align: baseline | top | middle | bottom
+```
+
+| 值       | 描述                                   |
+| -------- | -------------------------------------- |
+| baseline | 默认。元素放置在父元素的基线上。       |
+| top      | 把元素的顶端与行中最高元素的顶端对齐   |
+| middle   | 把此元素放置在父元素的中部             |
+| bottom   | 把元素的顶端与行中最低的元素的顶端对齐 |
+
+> bug:**图片底侧会有一个空白缝隙**，原因是行内块元素会和文字的基线对齐。
+> 主要解决方法有两种:
+> 1.给图片添加`vertical-align:middle|top|bottom`等。(提倡使用的)
+>
+> 2.把图片转换为块级元素 `display:block`
 
 ## 25.CSS 导航栏
 
@@ -3643,59 +3668,7 @@ p {
 }
 ```
 
-## 32.CSS 三角
 
-网页中常见一些三角形，使用CSS直接画出来就可以，不必做成图片或者字体图标。
-
-```css
-.box1{
-      height: 0;
-      width: 0;
-      /*line-height:0;
-      font-size:0;    低版本的浏览器需要写这两句话   */
-      border:100px solid transparent;   /* transparent设置为透明的颜色 */
-      margin: 20px auto;
-      border-right-color: pink;
-    }
-```
-
-<img src="C:/Users/wuqian/Desktop/note/img/csssanjiao.png" alt="csssanjiao" style="zoom:33%;" />如图所示，这是一个顶端朝左的三角。
-
-> 实例
-
-```css
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"></meta>
-	<title>Text Code</title>
-  <style>
-    .box1{
-      position: relative;
-      width: 300px;
-      height: 100px;
-      background-color: rgb(61, 115, 198);
-      margin: 20px auto;
-    }
-    .box1 span{
-      position: absolute;
-      top:40px;
-      right:-20px;
-      width: 0;
-      height: 0;
-      border: 10px solid transparent;
-      border-left-color: rgb(61, 115, 198);
-    }
-  </style>
-</head>
-<body>
-  <div class="box1">
-    <span></span>
-  </div>
-</body>
-```
-
-![csssanjiaoanli](C:/Users/wuqian/Desktop/note/img/csssanjiaoanli.png)效果如图所示
 
 
 
@@ -3890,5 +3863,221 @@ a1{
   <div class="box5"></div>
   <div class="box6"></div>
 </body>
+```
+
+# 三、CSS高级技巧
+
+## 1.CSS 三角
+
+网页中常见一些三角形，使用CSS直接画出来就可以，不必做成图片或者字体图标。
+
+```css
+.box1{
+      height: 0;
+      width: 0;
+      /*line-height:0;
+      font-size:0;    低版本的浏览器需要写这两句话   */
+      border:100px solid transparent;   /* transparent设置为透明的颜色 */
+      margin: 20px auto;
+      border-right-color: pink;
+    }
+```
+
+<img src="C:/Users/wuqian/Desktop/note/img/csssanjiao.png" alt="csssanjiao" style="zoom:33%;" />如图所示，这是一个顶端朝左的三角。
+
+> 实例
+
+```css
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+	<title>Text Code</title>
+  <style>
+    .box1{
+      position: relative;
+      width: 300px;
+      height: 100px;
+      background-color: rgb(61, 115, 198);
+      margin: 20px auto;
+    }
+    .box1 span{
+      position: absolute;
+      top:40px;
+      right:-20px;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-left-color: rgb(61, 115, 198);
+    }
+  </style>
+</head>
+<body>
+  <div class="box1">
+    <span></span>
+  </div>
+</body>
+```
+
+![csssanjiaoanli](C:/Users/wuqian/Desktop/note/img/csssanjiaoanli.png)效果如图所示
+
+## 2.溢出的文字省略号显示
+
+**1.单行文本溢出显示省略号--必须满足三个条件**
+
+```css
+/*1.先强制一行内显示文本*/
+white-space:nowrap;  /*(默认normal自动换行)*/
+/*2.超出的部分隐藏*/
+overflow: hidden;
+/*3.文字用省略号替代超出的部分*/
+text-overflow:ellipsis;
+```
+
+**2.多行文本溢出显示省略号**
+
+多行文本溢出显示省略号，有较大兼容性问题，适合于webKit浏览器或移动端(移动端大部分是webkit内核)
+
+```css
+overflow: hidden;
+text-overflow:ellipsis;
+/*弹性伸缩盒子模型显示 */
+display:-webkit-box;
+/*限制在一个块元素显示的文本的行数*/
+-webkit-line-clamp:2;
+/*设置或检索伸缩盒对象的子元素的排列方式*/
+-webkit-box-orient:vertical;
+```
+
+## 3.margin负值运用
+
+1.让每个盒子margin 往左侧移动 -1px 正好压住相邻盒子边框
+
+2.鼠标经过某个盒子的时候，提高当前盒子的层级即可(如果没有有定位，则加相对定位(保留位置)，如果有定位，则加z-index)
+
+```css
+	ul li{
+      /*position:absolute*/
+      float: left;
+      list-style: none;
+      width: 150px;
+      height: 200px;
+      border: 1px solid red;
+      margin-left: -1px;
+    }
+    ul li:hover{
+      /*position:relative*/
+      z-index: 1;
+      border: 1px solid blue;
+    }
+```
+
+## 4.文字围绕浮动元素
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+	<title>Text Code</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .box{
+      width: 300px;
+      height: 70px;
+      background-color: pink;
+      margin: 0 auto;
+      padding: 5px;
+    }
+    .pic{
+      float: left;     /*通过浮动来实现*/
+      width: 120px;
+      height: 60px;
+      margin-right: 5px;
+    }
+    .pic img{
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="pic">
+      <img src="..." alt="">
+    </div>
+    <p>我是qiqizizzz，onefwfwpfnwpefwefeaffwfsefsefsfafvsefvgbydafsf</p>
+  </div>
+</body>
+```
+
+## 5.行内块巧妙运用
+
+![css1](..\img\css1.png)**实例图**
+
+代码实现:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+	<title>Text Code</title>
+  <style>
+    .box{
+      margin-top: 30px;
+      text-align: center;
+    }
+    .box a{
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      background-color: #f7f7f7;
+      border: 1px solid #ccc;
+      text-align: center;     /*核心代码*/
+      line-height: 36px;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+    }
+    .box .prev,
+    .box .next{
+      width: 85px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <a href="#" class="prev">&lt;&lt;上一页</a>
+    <a href="#">2</a>
+    <a href="#">3</a>
+    <a href="#">4</a>
+    <a href="#">5</a>
+    <a href="#">6</a>
+    <a href="#">7</a>
+    <a href="#" class="next">&gt;&gt;下一页</a>
+  </div>
+</body>
+```
+
+## 6.CSS 三角强化
+
+**1.实现直角三角形**
+
+```css
+.box{
+      height: 0;
+      width: 0;
+      /*1.只保留右边的边框有颜色*/
+      border-color:transparent red transparent transparent;
+
+      /*2.样式都是solid */
+      border-style: solid;
+
+      /*3.上边框宽度要大,右边框宽度稍小,其余的边框该为0*/
+      border-width:100px 50px 0 0;
+    }
 ```
 
