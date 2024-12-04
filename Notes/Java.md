@@ -2841,6 +2841,10 @@ public class mycodetext{
 - 输出流：程序-->文件
 - 输入流：文件-->程序
 
+**注意：**
+
+随用随创建，什么时候不用什么时候关闭
+
 ## 1.FileOutputStream
 
 > 创建字节输出流对象
@@ -3358,6 +3362,31 @@ public static void main(String[] args) throws IOException {
             bw.write(value);
             bw.newLine();
         }
+        bw.close();
+    }
+```
+
+> 控制软件运行速度
+
+```java
+public static void main(String[] args) throws IOException {
+        BufferedReader br=new BufferedReader(new FileReader("D:\\CCodes\\vscodebase\\JAVA\\INTERFACE\\src\\mycode\\a.txt"));
+        String line=br.readLine();
+        br.close();
+
+        System.out.println(line);
+        int count=Integer.parseInt(line);
+        //表示当前软件又运行了一次
+        count++;
+
+        if(count<=3) {
+            System.out.println("欢迎使用本软件,第" + count + "次使用免费~");
+        }else {
+            System.out.println("本软件只能免费使用3次,欢迎您注册会员后继续使用~");
+        }
+        BufferedWriter bw=new BufferedWriter(new FileWriter("D:\\CCodes\\vscodebase\\JAVA\\INTERFACE\\src\\mycode\\a.txt"));
+        //把自增之后的count写出到文件中
+        bw.write(count+"");
         bw.close();
     }
 ```

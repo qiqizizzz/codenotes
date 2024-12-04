@@ -1,6 +1,12 @@
 # 一、GUI基础
 
-## 1.第一个`frame`窗口
+
+
+# 二、AWT
+
+## 2.1 组件和容器
+
+### 1.第一个`frame`窗口
 
 ```java
 Frame frame=new Frame("我的第一个Java图像界面窗口");
@@ -46,7 +52,7 @@ class MyFrame extends Frame {
 }
 ```
 
-## 2.Panel面板
+### 2.Panel面板
 
 ```java
 public static void main(String[] args)
@@ -84,4 +90,232 @@ public static void main(String[] args)
 
 
 
-# 二、AWT
+## 2.2布局管理器
+
+### **1.流式布局**
+
+```java
+		Frame frame=new Frame();
+
+        //组件-按钮
+        Button button1=new Button("button1");
+        Button button2=new Button("button2");
+        Button button3=new Button("button3");
+
+        //设置为流式布局
+        frame.setLayout(new FlowLayout());
+        //frame.setLayout(new FlowLayout(FlowLayout.CENTER)); --默认状态
+        //frame.setLayout(new FlowLayout(FlowLayout.LEFT));  --靠左
+        //frame.setLayout(new FlowLayout(FlowLayout.RIGHT)); --靠右
+
+        frame.setSize(200,200);
+
+        //把按钮添加上去
+        frame.add(button1);
+        frame.add(button2);
+        frame.add(button3);
+
+        frame.setVisible(true);
+```
+
+### **2.东西南北中**
+
+```java
+		Frame frame=new Frame();
+
+        Button east=new Button("East");
+        Button west=new Button("West");
+        Button south=new Button("South");
+        Button north=new Button("North");
+        Button center=new Button("Center");
+
+        frame.add(east,BorderLayout.EAST);
+        frame.add(west,BorderLayout.WEST);
+        frame.add(south,BorderLayout.SOUTH);
+        frame.add(north,BorderLayout.NORTH);
+        frame.add(center,BorderLayout.CENTER);
+
+        frame.setSize(200,200);
+        frame.setVisible(true);
+```
+
+### **3.表格布局(Grid)**
+
+```java
+		Frame frame=new Frame("TestGridLayout");
+
+        Button btn1=new Button("btn1");
+        Button btn2=new Button("btn2");
+        Button btn3=new Button("btn3");
+        Button btn4=new Button("btn4");
+        Button btn5=new Button("btn5");
+        Button btn6=new Button("btn6");
+
+        //设置表格布局
+        frame.setLayout(new GridLayout(3,2));
+
+        frame.add(btn1);
+        frame.add(btn2);
+        frame.add(btn3);
+        frame.add(btn4);
+        frame.add(btn5);
+        frame.add(btn6);
+
+        frame.pack();
+        frame.setVisible(true);
+```
+
+> **实例：**(制作一个如效果图的图形化按钮界面)
+
+```java
+		Frame frame=new Frame("Text");
+        frame.setVisible(true);
+        frame.setSize(200,200);
+        frame.setLocation(300,400);
+        frame.setBackground(Color.black);
+        frame.setLayout(new GridLayout(2,1));
+
+        Panel p1=new Panel(new BorderLayout());
+        Panel p2=new Panel(new GridLayout(2,1));
+        Panel p3=new Panel(new BorderLayout());
+        Panel p4=new Panel(new GridLayout(2,2));
+        
+        p1.add(new Button("East-1"),BorderLayout.EAST);
+        p1.add(new Button("West-1"),BorderLayout.WEST);
+        p2.add(new Button("p2-button-1"));
+        p2.add(new Button("p2-button-2"));
+        p1.add(p2,BorderLayout.CENTER);
+
+        p3.add(new Button("East-2"),BorderLayout.EAST);
+        p3.add(new Button("West-2"),BorderLayout.WEST);
+        for(int i=0;i<4;i++)
+        {
+            p4.add(new Button("p4-button-"+i));
+        }
+        p3.add(p4,BorderLayout.CENTER);
+        frame.add(p1);
+        frame.add(p3);
+```
+
+> 效果图
+
+<img src="..\img\gui_panel.png" alt="gui_panel" style="zoom: 50%;" />如图所示
+
+## 2.3 事件监听
+
+```java
+public class GUI_text {
+    public static void main(String[] args)
+    {
+        //按下按钮,触发一些事件
+        Frame frame=new Frame();
+        frame.setVisible(true);
+        frame.setSize(1000,1500);
+        frame.setLocation(300,400);
+        Button button=new Button();
+        //因为,addActionListener()需要一个ActionListerner,所以我们需要构造一个ActionListerner
+        MyActionListener myActionListener=new MyActionListener();
+        button.addActionListener(myActionListener);
+
+        frame.add(button,BorderLayout.CENTER);
+        frame.pack();
+
+        windowClose(frame);//关闭窗口
+    }
+    //关闭窗体的事件
+    private static void windowClose(Frame frame){
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+}
+//事件监听
+class MyActionListener implements ActionListener{
+    public void actionPerformed(ActionEvent e)
+    {
+        System.out.println("你好呀");
+    }
+
+}
+```
+
+> **实例：**(两个按钮监听一个事件)
+
+```java
+public class GUI_text {
+    public static void main(String[] args) {
+        Frame frame=new Frame("开始-停止");
+        Button button1=new Button("start");
+        Button button2=new Button("stop");
+
+        //可以显示的定义触发会返回的命令,如果不显示定义,则会走默认的值.
+        button2.setActionCommand("button2-stop");
+
+        MyMonitor myMonitor=new MyMonitor();
+
+        button1.addActionListener(myMonitor);
+        button2.addActionListener(myMonitor);
+
+        frame.add(button1,BorderLayout.NORTH);
+        frame.add(button2,BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+class MyMonitor implements ActionListener{
+
+    @Override
+    public void actionPerformed(ActionEvent e){
+        //e.getActionCommand() 获得按钮的信息
+        System.out.println("按钮被点击了:msg=>"+e.getActionCommand());
+        if(e.getActionCommand().equals("start")){
+            System.out.println("我是SRART");
+        }
+        else {
+            System.out.println("我是其他");
+        }
+    }
+}
+```
+
+## 2.4 输入框TextFiled监听
+
+```java
+public class GUI_text {
+    public static void main(String[] args) {
+        new MyFrame2();
+    }
+}
+
+class MyFrame2 extends Frame{
+    public MyFrame2(){
+        TextField textField=new TextField();
+        add(textField);
+
+        //监听这个文本框输入的文字
+        MyActionListener2 myActionListener2=new MyActionListener2();
+        //按下enter,就会触发这个输入框的事件
+        textField.addActionListener(myActionListener2);
+
+        //设置替换编码
+        textField.setEchoChar('*');
+
+        setVisible(true);
+        pack();
+    }
+}
+
+class MyActionListener2 implements ActionListener{
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        TextField field=(TextField) e.getSource();     //获得一些资源,返回的一个对象
+        System.out.println(field.getText());   //获得输入框的文本
+        field.setText("");//设置文本框为"",即清空文本框
+    }
+}
+```
+
