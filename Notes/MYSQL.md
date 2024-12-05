@@ -2095,3 +2095,313 @@ FETCH 游标名称 INTO 变量[,变量 ];
 CLOSE 游标名称;
 ```
 
+## 7.条件处理程序
+
+条件处理程序(Handler)可以用来定义在流程控制结构执行过程中遇到问题时相应的处理步骤。具体语法为:
+
+```sql
+DECLARE handler_action HANDLER FOR condition value [,condition_value... statement ;
+
+handler_action
+	-- CONTINUE: 继续执行当前程序
+	-- EXIT:终止执行当前程序
+condition_value
+	-- SOLSTATE sqlstate_value:状态码，如 02000
+	-- SQLWARNING: 所有以01开头的SQLSTATE代码的简写
+	-- NOT FOUND:所有以02开头的SQLSTATE代码的简写
+	-- SQLEXCEPTION:所有没有被SQLWARNING 或 NOT FOUND捕获的SQLSTATE代码的简写
+```
+
+> 实例：
+
+```sql
+create procedure p11(in uage int)
+begin
+	declare uname varchar(100);
+	declare upro varchar(100);
+	declare u_cursor cursor for select name,profession from tb_user where age <= uage;
+	declare exit handler for SQLSTATE '02000' close u_cursor;
+	-- exit(handler_action),SQLSTATE '02000'(SQLWARNING)
+	-- 这里的SQLSTATE '02000'可用NOT FOUND代替
+
+	drop table if exists tb_user_pro;
+	create table if not exists tb user pro(
+		id int primary key auto_increment,
+		name varchar(100),
+		profession varchar(100)
+);
+
+	open u_cursor;
+	while true do
+		fetch u cursor into uname,upro;
+		insert into tb_user_pro values(null,uname, upro);
+	end while;
+	close u_cursor;
+
+end;
+```
+
+
+
+## 8.存储函数
+
+存储函数是有返回值的存储过程，存储函数的参数只能是IN类型的。具体语法如下:
+
+```sql
+CREATE FUNCTION 存储函数名称([参数列表])
+RETURNS type [characteristic ...]
+BEGIN
+	-- SQL语句
+	RETURN ...
+END;
+```
+
+> **characteristic说明:**
+
+- `DETERMINISTIC`:相同的输入参数总是产生相同的结果
+- `NO SOL`:不包含 SOL语句。
+- `READS SOL DATA`:包含读取数据的语句，但不包含写入数据的语句。
+
+> 实例
+
+```sql
+create function fun1(n int)
+returns int deterministic
+begin
+	declare total int default 0;
+	
+	while n>0 do
+		set total := total + n;
+		set n := n- 1;
+	end while;
+	
+	return total;
+end;
+```
+
+## 9.触发器
+
+触发器是与表有关的数据库对象，指在 insert/update/delete 之前或之后，触发并执行触发器中定义的SOL语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性，日志记录，数据校验等操作，
+
+使用别名 `OLD` 和 `NEW` 来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发，不支持语句级触发。
+
+| 触发器类型      | NEW 和 OLD                                             |
+| --------------- | ------------------------------------------------------ |
+| INSERT 型触发器 | NEW 表示将要或者已经新增的数据                         |
+| UPDATE 型触发器 | OLD 表示修改之前的数据，NEW 表示将要或已经修改后的数据 |
+| DELETE型触发器  | OLD 表示将要或者已经删除的数据                         |
+
+**语法**
+
+> 创建
+
+```sql
+CREATE TRIGGER trigger_name
+BEFORE/AFTER INSERT/UPDATE/DELETE
+ON tbl_name FOR EACH ROW -- 行级触发器
+BEGIN
+	trigger_stmt ;
+END; 
+```
+
+> 查看
+
+```sql
+SHOW TRIGGERS ;
+```
+
+> 删除
+
+```sql
+DROP TRIGGER [schema_name.]trigger_name;-- 如果没有指定 schema_name,默认为当前数据库。
+```
+
+### 1.插入数据触发器
+
+```sql
+create trigger tb_user_insert_trigger
+	after insert on tb_user for each row
+begin
+	insert into user_logs(id, operation, operate_time, operate_id, operate_params) VALUES
+	(null, 'insert', 
+     now(),new.id,concat('插入的数据为:id=',new.id,',name=',new.name,',phone=',NEW.phone,
+     ',email=',new.email,',profession=',new.profession));
+end;
+```
+
+### 2.修改数据触发器
+
+```sql
+create trigger tb_user_update_trigger
+	after update on tb_user for each row
+begin
+	insert into user_logs(id, operation, operate_time, operate_id, operate_params) VALUES
+	(null,'update',now(),new.id,
+		concat('更新之前的数据:id=',old.id,',name='old.name，',phone='old.phone,
+               ',email=',old.email,',profession',old.profession,
+			'|更新之后的数据:id=',new.id,',name=',new.name，',phone=',NEW.phone,
+               ',email=',NEW.email,'profession=',NEW.profession));
+end;
+```
+
+### 3.删除数据触发器
+
+```sql
+create trigger tb_user_insert_trigger
+	after delete on tb_user for each row
+begin
+	insert into user_logs(id, operation, operate_time, operate_id, operate_params) VALUES
+	(null, 'delete', 
+     now(),new.id,concat('删除之前的数据为:id=',old.id,',name=',old.name,',phone=',old.phone,',
+     email=',old.email,',profession=',old.profession));
+end;
+```
+
+# 七、锁
+
+锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源(CPU、RAM、I/O)的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。
+
+MySOL中的锁，按照锁的粒度分，分为以下三类:
+
+- 全局锁:锁定数据库中的所有表。
+- 表级锁:每次操作锁住整张表
+- 行级锁:每次操作锁住对应的行数据。
+
+## 1.全局锁
+
+全局锁就是对整个数据库实例加锁，加锁后整个实例就处于只读状态，后续的DML的写语句，DDL语句，已经更新操作的事务提交语句都将被阻塞。
+
+其典型的使用场景是做全库的逻辑备份，对所有的表进行锁定，从而获取一致性视图，保证数据的完整性。
+
+**语法**
+
+```sql
+flush tables with read lock;/*上锁*/
+
+mysqldump -uroot-p1234 qiqizizzz>qiqizizzz1.sql;
+-- 1234是密码
+-- qiqizizzz是数据库
+
+unlock tables; /*开锁*/
+```
+
+数据库中加全局锁，是一个比较重的操作，存在以下问题
+
+1.如果在主库上备份，那么在备份期间都不能执行更新，业务基本上就得停摆。
+
+2.如果在从库上备份，那么在备份期间从库不能执行主库同步过来的二进制日志(binlog)，会导致主从延迟，
+
+在InnoDB引擎中，我们可以在备份时加上参数--single-transaction 参数来完成不加锁的一致性数据备份,
+
+```sql
+mysqldump --single-transaction -uroot-p123456 qiqizizzz>qiqizizzz.sql
+```
+
+## 2.表级锁
+
+对于表锁，分为两类:
+
+1.表共享读锁(read lock)
+
+2.表独占写锁(write lock)
+
+**语法**
+
+```sql
+lock tables 表名... read/write -- 加锁
+unlock tables/客户端断开连接 -- 释放锁
+```
+
+元数据锁(meta data lock，MDL)
+
+MDL加锁过程是系统自动控制，无需显式使用，在访问一张表的时候会自动加上。MDL锁主要作用是维护表元数据的数据一致性，在表上有活动事务的时候，不可以对元数据进行写入操作。为了避免DML与DDL冲突，保证读写的正确性。
+
+在MVSOL5.5中引入了MDL，当对一张表进行增删改查的时候，加MDL读锁(共享);当对表结构进行变更操作的时候，加MDL写锁(排他)。
+
+| 对应SQL                                      | 锁类型                                | 说明                                             |
+| -------------------------------------------- | ------------------------------------- | ------------------------------------------------ |
+| lock tables xxx read /write                  | SHARED_READ_ONLY/SHARED_NO_READ_WRITE |                                                  |
+| select、select ... lock in share mode        | SHARED_READ                           | 与SHARED_READ、SHARED_WRITE兼容，与EXCLUSIVE互斥 |
+| insert 、update、delete、select...for update | SHARED_WRITE                          | 与SHARED_READ、SHARED_WRITE兼容，与EXCLUSIVE互斥 |
+| alter table ...                              | EXCLUSIVE                             | 与其他的MDL都互斥                                |
+
+查看元数据锁:
+
+```sql
+select object_type,object_schema,object_name,lock_type,lock_duration from performance_schema.metadata locks;
+```
+
+### 意向锁
+
+为了避免DML在执行时，加的行锁与表锁的冲突，在InnoDB中引入了意向锁，使得表锁不用检查每行数据是否加锁，使用意向锁来减少表锁的检查。
+
+意向锁
+
+- 意向共享锁(IS):与表锁共享锁(read)兼容，与表锁排它锁(write)互斥。
+- 意向排他锁(IX):与表锁共享锁(read)及排它锁(write)都互斥。意向锁之间不会互斥。
+
+可以通过以下SOL，查看意向锁及行锁的加锁情况:
+
+```sql
+select object_schema,object_name,index_name,lock_type,lock_mode,lock_data 
+from performance_schema.data_locks;
+```
+
+## 3.行级锁
+
+行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在InnoDB存储引擎中。
+
+InnoDB的数据是基于索引组织的，行锁是通过对索引上的索引项加锁来实现的，而不是对记录加的锁。对于行级锁，主要分为以下三类:
+
+- 行锁(Record Lock):锁定单个行记录的锁，防止其他事务对此行进行update和delete。在RC、RR隔离级别下都支持。
+- 间隙锁(GapLock):锁定索引记录间隙(不含该记录)，确保索引记录间隙不变，防止其他事务在这个间隙进行inser，产生幻读。在RR隔离级别下都支持。
+- 3.临键锁(Next-KeyLock):行锁和间隙锁组合，同时锁住数据，并锁住数据前面的间隙Gap。在RR隔离级别下支持。
+
+InnoDB实现了以下两种类型的行锁:
+
+1.共享锁(S):允许一个事务去读一行，阻止其他事务获得相同数据集的排它锁。
+
+2.排他锁(X):允许获取排他锁的事务更新数据，阻止其他事务获得相同数据集的共享锁和排他锁。
+
+| 当前锁类型\请求锁类型 | S(共享锁) | X(排他锁) |
+| --------------------- | --------- | --------- |
+| S(共享锁)             | 兼容      | 冲突      |
+| X(排他锁)             | 冲突      | 冲突      |
+
+
+
+| SQL                           | 行锁类型       | 说明                                   |
+| ----------------------------- | -------------- | -------------------------------------- |
+| INSERT ...                    | 排他锁         | 自动加锁                               |
+| UPDATE ...                    | 排他锁         | 自动加锁                               |
+| DELETE ..                     | 排他锁         | 自动加锁                               |
+| SELECT(正常)                  | **不加任何锁** |                                        |
+| SELECT ... LOCK IN SHARE MODE | 共享锁         | 需要手动在SELECT之后加LOCKINSHARE MODE |
+| SELECT ... FOR UPDATE         | 排他锁         | 需要手动在SELECT之后加FOR UPDATE       |
+
+
+默认情况下，InnODB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key锁进行搜索和索引扫描，以防止幻读。
+
+1.针对唯一索引进行检索时，对已存在的记录进行等值匹配时，将会自动优化为行锁。
+
+2.nnoDB的行锁是针对于索引加的锁，不通过索引条件检索数据，那么InnoDB将对表中的所有记录加锁，此时 就会升级为表锁。
+可以通过以下SOL，查看意向锁及行锁的加锁情况:
+
+```sql
+select object_schema,object_name,index_name,lock_type,lock_mode,lock_data 
+from performance_schema.data_locks;
+```
+
+
+
+间隙锁/临键锁
+
+默认情况下，InnoDB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁进行搜索和索引扫描，以防止幻读。
+
+- 索引上的等值查询(唯一索引)，给不存在的记录加锁时,优化为间隙锁 。
+- 索引上的等值查询(普通索引)，向右遍历时最后一个值不满足查询需求时，next-keylock退化为间隙锁。
+- 索引上的范围查询(唯一索引)--会访问到不满足条件的第一个值为止。
+
+
+
+**注意**:间隙锁唯一目的是防止其他事务插入间隙。间隙锁可以共存，一个事务采用的间隙锁不会阻止另一个事务在同一间隙上采用间隙锁。
