@@ -1194,18 +1194,26 @@ MEMORY:将所有数据保存在内存中，访问速度快，通常用于临时�
 
 ```mysql
 CREATE [UNIQUE | FULLTEXT ] INDEX index_name ON table_name(index_col_name...);
+# 在水果类型表的类型名上创建唯一索引
+create unique index Categoryname_index on fruitcategory(CategoryName);
 ```
 
 **2.查看索引**
 
 ```mysql
 SHOW INDEX FROM table_name;
+# 查询水果表上所有的索引信息。
+show index from fruitcategory;
 ```
 
 **3.删除索引**
 
 ```mysql
 DROP INDEX index_name ON table_name;
+# 删除水果表上原有的所有非聚集索引。
+drop index CategoryName_Index on FruitCategory;
+# 如有主键对应的聚集索引，则需要把主键删除。
+alter table FruitCategory drop primary key;
 ```
 
 ## 4.性能分析
@@ -1273,6 +1281,9 @@ EXPLAIN或者DESC命令获取MySQL如何执行SELECT语句的信息，包括在S
 ```mysql
 #直接在select语句之前加上关键字explain/desc
 EXPLAIN SELECT 字段列表 FROM 表名 WHERE 条件;
+# 验证未创建索引时的执行计划。
+# select * from FruitCategory where CategoryName='浆果'
+explain select * from fruitcategory where CategoryName='浆果';
 ```
 
 EXPLAIN执行计划各字段含义:
