@@ -692,6 +692,7 @@ p {font-size:0.875em;}
      url('fonts/icomoon.svg?7kkyc2#icomoon') format('svg');
    font-weight: normal;
    font-style: normal;
+   font-display: block;
  }
 ```
 
@@ -708,7 +709,7 @@ span{
 **3.复制某个字体图标的标签(官网查询)**
 
 ```css
-<span></span>
+<span></span>  /* 或者用\e900来显示标签 */
 ```
 
 > **字体图标的优点**
@@ -2518,7 +2519,7 @@ div {
 
 ```css
 .clearfix:after{
-	content:" ";
+	content:"";
 	display:block;
 	height:0;
 	clear: both;
@@ -3864,6 +3865,291 @@ a1{
   <div class="box6"></div>
 </body>
 ```
+
+## 5.CSS3 新元素
+
+### 1.属性选择器
+
+属性选择器可以根据元素特定属性的来选择元素。这样就可以不用借助于类或者id选择器。
+
+| 选择符        | 简介                                        |
+| ------------- | ------------------------------------------- |
+| E[att]        | 选择具有 att 属性的 E 元素                  |
+| E[att="val"]  | 选择具有 att 属性且属性值等于 val 的 E 元素 |
+| E[att^="val"] | 匹配具有 att 属性且值以 val 开头的 E 元素   |
+| E[att$="val"] | 匹配具有 att 属性且值以 val 结尾的 E 元素   |
+| E[att*="val"] | 匹配具有 att 属性且值中含有 val 的 E 元素   |
+
+> 实例
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8"></meta>
+    <style>
+      input[type="text"]{   /* 选择type属性为text的元素(这里的text可加引号也可不加引号) */
+        color: aqua;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="password" name="" id="">
+    <input type="text">
+  </body>
+</html>
+```
+
+### 2.结构伪类选择器
+
+结构伪类选择器主要根据**文档结构**来选择器元素，常用于根据父级选择器里面的子元素。
+
+| 选择符            | 简介                        |
+| ----------------- | --------------------------- |
+| E :first-child    | 匹配父元素中的第一个子元素E |
+| E :last-child     | 匹配父元素中最后一个E元素   |
+| E :nth-child(n)   | 匹配父元素中的第 n个子元素E |
+| E :first-of-type  | 指定类型E的第一个           |
+| E :last-of-type   | 指定类型E的最后一个         |
+| E :nth-of-type(n) | 指定类型E的第n个            |
+
+> 实例（`E :first-child`）：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8"></meta>
+    <style>
+      ul :first-child{  /*注意这里ul后面要有一个空格不然无法生效*/
+        background: #118585;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+    </ul>
+  </body>
+</html>
+```
+
+> 实例：(`E :nth-child(n)`)
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8"></meta>
+    <style>
+      ul :nth-child(odd){    /* 实现奇数行背景颜色改变(换成even则偶数行改变) */
+        background: #118585;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+    </ul>
+  </body>
+</html>
+```
+
+#### nth-child(n)相关算法
+
+nth-child(n)选择某个父元素的一个或多个特定的子元素
+
+- **n 可以是数字，关键字和公式**
+- n 如果是数字，就是选择第n个子元素，里面数字从1开始...
+- n 可以是关键字:even偶数，odd奇数
+- n 可以是公式:常见的公式如下(如果n是公式，则从0开始计算，但是第0个元素或者超出了元素的个数会被忽略)
+
+| 公式 | 取值                          |
+| ---- | ----------------------------- |
+| 2n   | 偶数                          |
+| 2n+1 | 奇数                          |
+| 5n   | 5 10 15...                    |
+| n+5  | 从第5个开始(包含第五个)到最后 |
+| -n+5 | 前5个(包含第5个)…             |
+
+### 3.伪元素选择器
+
+伪元素选择器可以帮助我们利用CSS创建新标签元素，而不需要HTML标签，从而简化HTML结构
+
+| 选择符   | 简介                     |
+| -------- | ------------------------ |
+| ::before | 在元素内部的前面插入内容 |
+| ::after  | 在元素内部的后面插入内容 |
+
+**注意:**
+
+- before 和 after 创建一个元素，但是属于行内元素
+- 新创建的这个元素在文档树中是找不到的，所以我们称为伪元素
+- 语法:`element::before {}`
+- before 和 after 必须有 content 属性
+- before 在父元素内容的前面创建元素，after在父元素内容的后面插入元素
+- 伪元素选择器和标签选择器一样，权重为1
+
+> 实例：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8"></meta>
+    <style>
+      div::before{
+        content: '我';
+      }
+      div::after{
+        content: '柒柒子';
+      }
+    </style>
+  </head>
+  <body>
+    <div>是</div>
+  </body>
+</html>
+```
+
+> 实例：**(伪元素字体图标)**
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8">
+    <style>
+       @font-face {
+        font-family: 'icomoon';
+        src:  url('fonts/icomoon.eot?adicqn');
+        src:  url('fonts/icomoon.eot?adicqn#iefix') format('embedded-opentype'),
+        url('fonts/icomoon.ttf?adicqn') format('truetype'),
+        url('fonts/icomoon.woff?adicqn') format('woff'),
+        url('fonts/icomoon.svg?adicqn#icomoon') format('svg');
+        font-weight: normal;
+        font-style: normal;
+        font-display: block;
+        }
+
+    div{
+      position: relative;
+      width: 200px;
+      height: 30px;
+      border: 1px solid black;
+    }
+
+    div::after{
+      position: absolute;
+      font-family: 'icomoon';
+      content: '';
+      top:10px;
+      right: 10px;
+    }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
+```
+
+### 4.盒子模型
+
+CSS3 中可以通过 `box-sizing`来指定盒模型，有2个值:即可指定为`content-box`、`border-box`，这样我们计算盒子大小的方式就发生了改变，可以分成两种情况:
+
+- box-sizing:content-box 盒子大小为 width+ padding+ border (以前默认的)
+- box-sizing:border-box 盒子大小为width
+
+如果盒子模型我们改为了`box-sizing:border-box`，那`padding`和`border`就不会撑大盒子了(前提`padding`和`border`不会超过width宽度)。
+
+```css
+*{
+    padding:0;
+    margin:0;
+    box-sizing: border-box;  /* 使盒子不会变形 */
+}
+```
+
+## 6.CSS3 图片
+
+### 图片滤镜
+
+CSS `filter` 属性用为元素添加可视效果 (例如：模糊与饱和度) 。
+
+**注意:** Internet Explorer 或 Safari 5.1 (及更早版本) 不支持该属性。
+
+```css
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8">
+    <style>
+       img{
+        filter: blur(5px); /* blur是一个函数,小括号里面数值越大,图片越模糊 数值要加px单位*/
+       }
+    </style>
+  </head>
+  <body>
+    <img src="image/mosi.PNG">
+  </body>
+</html>
+```
+
+**Filter 函数**
+
+**注意:** 滤镜通常使用百分比 (如：75%), 当然也可以使用小数来表示 (如：0.75)。
+
+| Filter                                           | 描述                                                         |
+| :----------------------------------------------- | :----------------------------------------------------------- |
+| none                                             | 默认值，没有效果。                                           |
+| blur(*px*)                                       | 给图像设置高斯模糊。"radius"一值设定高斯函数的标准差，或者是屏幕上以多少像素融在一起， 所以值越大越模糊；  如果没有设定值，则默认是0；这个参数可设置css长度值，但不接受百分比值。 |
+| brightness(*%*)                                  | 给图片应用一种线性乘法，使其看起来更亮或更暗。如果值是0%，图像会全黑。值是100%，则图像无变化。其他的值对应线性乘数效果。值超过100%也是可以的，图像会比原来更亮。如果没有设定值，默认是1。 |
+| contrast(*%*)                                    | 调整图像的对比度。值是0%的话，图像会全黑。值是100%，图像不变。值可以超过100%，意味着会运用更低的对比。若没有设置值，默认是1。 |
+| drop-shadow(h-shadow v-shadow blur spread color) | 给图像设置一个阴影效果。阴影是合成在图像下面，可以有模糊度的，可以以特定颜色画出的遮罩图的偏移版本。 函数接受`<shadow>`(在CSS3背景中定义)类型的值，除了"inset"关键字是不允许的。该函数与已有的box-shadow box-shadow属性很相似；不同之处在于，通过滤镜，一些浏览器为了更好的性能会提供硬件加速。`<shadow>`参数如下：<br/>`<offset-x>` `<offset-y>` (必须)<br/>这是设置阴影偏移量的两个 `<length>`值. `<offset-x>` 设定水平方向距离. 负值会使阴影出现在元素左边. `<offset-y>`设定垂直距离.负值会使阴影出现在元素上方。查看`<length>`可能的单位.<br/>如果两个值都是0, 则阴影出现在元素正后面 (如果设置了 `<blur-radius>` and/or `<spread-radius>`，会有模糊效果).<br/>`<blur-radius>` (可选)<br/>这是第三个code>`<length>`值. 值越大，越模糊，则阴影会变得更大更淡.不允许负值 若未设定，默认是0 (则阴影的边界很锐利).<br/>`<spread-radius>` (可选)<br/>这是第四个 `<length>`值. 正值会使阴影扩张和变大，负值会是阴影缩小.若未设定，默认是0 (阴影会与元素一样大小). <br/>注意: Webkit, 以及一些其他浏览器 不支持第四个长度，如果加了也不会渲染。<br/> `<color>` (可选)<br/>查看 `<color>`该值可能的关键字和标记。若未设定，颜色值基于浏览器。在Gecko (Firefox), Presto (Opera)和Trident (Internet Explorer)中， 会应用colorcolor属性的值。另外, 如果颜色值省略，WebKit中阴影是透明的。 |
+| grayscale(*%*)                                   | 将图像转换为灰度图像。值定义转换的比例。值为100%则完全转为灰度图像，值为0%图像无变化。值在0%到100%之间，则是效果的线性乘子。若未设置，值默认是0； |
+| hue-rotate(*deg*)                                | 给图像应用色相旋转。"angle"一值设定图像会被调整的色环角度值。值为0deg，则图像无变化。若值未设置，默认值是0deg。该值虽然没有最大值，超过360deg的值相当于又绕一圈。 |
+| invert(*%*)                                      | 反转输入图像。值定义转换的比例。100%的价值是完全反转。值为0%则图像无变化。值在0%和100%之间，则是效果的线性乘子。 若值未设置，值默认是0。 |
+| opacity(*%*)                                     | 转化图像的透明程度。值定义转换的比例。值为0%则是完全透明，值为100%则图像无变化。值在0%和100%之间，则是效果的线性乘子，也相当于图像样本乘以数量。 若值未设置，值默认是1。该函数与已有的opacity属性很相似，不同之处在于通过filter，一些浏览器为了提升性能会提供硬件加速。 |
+| saturate(*%*)                                    | 转换图像饱和度。值定义转换的比例。值为0%则是完全不饱和，值为100%则图像无变化。其他值，则是效果的线性乘子。超过100%的值是允许的，则有更高的饱和度。 若值未设置，值默认是1。 |
+| sepia(*%*)                                       | 将图像转换为深褐色。值定义转换的比例。值为100%则完全是深褐色的，值为0%图像无变化。值在0%到100%之间，则是效果的线性乘子。若未设置，值默认是0； |
+| url()                                            | URL函数接受一个XML文件，该文件设置了 一个SVG滤镜，且可以包含一个锚点来指定一个具体的滤镜元素。例如：`filter: url(svg-url#element-id)` |
+| initial                                          | 设置属性为默认值，可参阅： CSS initial 关键字                |
+| inherit                                          | 从父元素继承该属性，可参阅：CSS inherit 关键字               |
+
+## 7.CSS3 过渡
+
+
+
+## 6.CSS3 其他特性
+
+### calc 函数
+
+`calc()`此CSS函数让你在声明CSS属性值时执行一些计算。
+
+```css
+width: calc(100% -80px);/*使子盒子的宽度永远比父盒子小80px*/
+```
+
+括号里面可以使用 +-*/来进行计算。
 
 # 三、CSS高级技巧
 
