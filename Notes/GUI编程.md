@@ -22,16 +22,16 @@
 
 容器是Component的子类，一个容器可以容纳多个组件，并使他们成为一个整体。容器可以简化图形化界面的设计，以整体结构来布置界面，所有的组件都可以通过add()方法加入容器中。
 
-有三种类型的容器：Window、Panel、ScrollPane
+有三种类型的容器：`Window`、`Panel`、`ScrollPane`
 
-- Window类：是不依赖其他容器而独立存在的容器他有两个子类分别是Frame类和Dialog类。Frame类用于创建一个具有标题栏的框架窗口作为程序的主要界面，Dialog类用于创建一个对话框，实现与用户的信息交换。
+- `Window`类：是不依赖其他容器而独立存在的容器。他有两个子类，分别是Frame类和Dialog类。Frame类用于创建一个具有标题栏的框架窗口作为程序的主要界面，Dialog类用于创建一个对话框，实现与用户的信息交换。
 
-- Panel类：也是一个容器,但是他不能单独存在,只能存在于其他容器(window或其子类)中,一个panel对象代表了一个长方形的区域,在这个区域中可以容纳其他组件，在程序中通常会使panel来实现一些特殊的布局。
+- `Panel`类：也是一个容器，但是他不能单独存在，只能存在于其他容器(window或其子类)中，一个panel对象代表了一个长方形的区域，在这个区域中可以容纳其他组件，在程序中通常会使panel来实现一些特殊的布局。
 
-- ScrollPane类：用于实现单个子组件的自动水平和/或垂直滚动的容器类。因此该类创建的对象也是一个容器，称为滚动面板。
+- `ScrollPane`类：用于实现单个子组件的自动水平和/或垂直滚动的容器类。因此该类创建的对象也是一个容器，称为滚动面板。
 
 
-常用的容器有：Panel、Frame、Applet
+常用的容器有：`Panel`、`Frame`、`Applet`
 
 ### 1.第一个`frame`窗口
 
@@ -81,7 +81,7 @@ class MyFrame extends Frame {
 
 ### 2.Panel面板
 
- Panel是一种透明的容器，既没有标题，也没有边框。它不能作为最外层的容器单独存在，首先必须先作为一个组件放置在其他容器中，然后再把它当做容器。
+`Panel`是一种透明的容器，既没有标题，也没有边框。它不能作为最外层的容器单独存在，首先必须先作为一个组件放置在其他容器中，然后再把它当做容器。
 
 ```java
 public static void main(String[] args)
@@ -539,23 +539,23 @@ public class GridBagLayoutDemo {
 
 > **低级事件：**
 
-- ComponentEvent 构件事件，构件尺寸的变化以及移动·
-- ContainerEvent 容器事件，构件增加，移动
-- WindowEvent 窗口事件，关闭窗口，窗口闭合，图标化
-- FocusEvent 焦点事件，焦点的获得与丢失
-- KeyEvent 键盘事件，键按下，释放
-- MouseEvent 鼠标事件，鼠标点击，移动
+- `ComponentEvent` 构件事件，构件尺寸的变化以及移动·
+- `ContainerEvent` 容器事件，构件增加，移动
+- `WindowEvent` 窗口事件，关闭窗口，窗口闭合，图标化
+- `FocusEvent` 焦点事件，焦点的获得与丢失
+- `KeyEvent` 键盘事件，键按下，释放
+- `MouseEvent` 鼠标事件，鼠标点击，移动
 
 > **高级事件（语义事件）：**
 
-- ActionEvent 动作事件，按键按下，TextField中按下Enter键
-- AdjustmentEvent 调节事件，在滚动条上移动滑块以调节数值
-- ItemEvent 项目事件，选择项目，不选择“项目改变”
-- TextEvent 文本事件，文本对象改变
+- `ActionEvent` 动作事件，按键按下，TextField中按下Enter键
+- `AdjustmentEvent` 调节事件，在滚动条上移动滑块以调节数值
+- `ItemEvent` 项目事件，选择项目，不选择“项目改变”
+- `TextEvent` 文本事件，文本对象改变
 
 > **事件适配器**
 
-java语言为一些Listener接口提供了适配器类。适配器类提供了一些简单的实现或空实现，可以缩短程序代码，有时候我们并不需要实现接口中所有的方法，但是类呢只支持单继承，对于多种监听器就无法采用事件适配器了，而接口支持多继承，则更大程度上给与我们自己发挥的空间。
+java语言为一些`Listener`接口提供了适配器类。适配器类提供了一些简单的实现或空实现，可以缩短程序代码，有时候我们并不需要实现接口中所有的方法，但是类呢只支持单继承，对于多种监听器就无法采用事件适配器了，而接口支持多继承，则更大程度上给与我们自己发挥的空间。
 
 ### 1.事件监听
 
@@ -1149,6 +1149,98 @@ class MyDialogDemo extends JDialog{
     }
 }
 ```
+
+## 2.3 常用标签
+
+### 1.Icon
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+//图标,需要实现类,Frame继承
+public class IconDemo extends JFrame implements Icon {
+    private int width;
+    private int height;
+
+    public IconDemo(){} //无参构造
+
+    public IconDemo(int width,int height){
+        this.width=width;
+        this.height=height;
+    }
+
+    public void init(){
+        IconDemo iconDemo=new IconDemo(15,15);
+        //图标放在标签,也可以放在按钮上
+        JLabel label=new JLabel("icontest",iconDemo,SwingConstants.CENTER);
+
+        Container container=getContentPane();
+        container.add(label);
+
+        this.setBounds(15,15,200,330);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        IconDemo iconDemo=new IconDemo();
+        iconDemo.init();
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        g.fillOval(x,y,width,height);
+    }
+
+    @Override
+    public int getIconWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getIconHeight() {
+        return this.height;
+    }
+}
+```
+
+### 2.ImageIcon
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
+public class ImageIconDemo extends JFrame {
+    public ImageIconDemo(){
+        //获取图片的地址
+        JLabel label=new JLabel("ImageIcon");
+        URL url=ImageIconDemo.class.getResource("1.png");
+
+        ImageIcon imageIcon=new ImageIcon(url);
+        label.setIcon(imageIcon);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        Container container=getContentPane();
+        container.add(label);
+
+        setVisible(true);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBounds(100,100,200,200);
+    }
+
+    public static void main(String[] args) {
+        new ImageIconDemo();
+    }
+}
+```
+
+
 
 # 四、实例
 

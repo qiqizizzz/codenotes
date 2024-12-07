@@ -2069,6 +2069,134 @@ HTML **`<svg>`** 元素是 SVG 图形的容器。
 
 SVG 有多种绘制路径、框、圆、文本和图形图像的方法。
 
+
+
+## 3.HTML5 新元素
+
+### 1.语义化标签
+
+- `<header>`:头部标签
+- `<nav>`:导航标签
+- `<article>`:内容标签
+- `<section>`:定义文档某个区域
+- `<aside>`:侧边栏标签
+- `<footer>`:尾部标签
+
+**注意:**
+这种语义化标准主要是针对搜索引擎的，这些新标签页面中可以使用多次。在IE9中，需要把这些元素转换为块级元素，移动端使用的更多。
+
+### 2.多媒体标签 
+
+#### `<audio>`-音频
+
+**语法**
+
+```html
+<audio src="#" controls="controls"></audio>
+<!-- #是文件地址-->
+```
+
+**音频格式及浏览器支持**
+
+目前, `<audio>`元素支持三种音频格式文件: MP3, Wav, 和 Ogg:
+
+| 浏览器               | MP3  | Wav  | Ogg  |
+| :------------------- | :--- | :--- | :--- |
+| Internet Explorer 9+ | YES  | NO   | NO   |
+| Chrome 6+            | YES  | YES  | YES  |
+| Firefox 3.6+         | YES  | YES  | YES  |
+| Safari 5+            | YES  | YES  | NO   |
+| Opera 10+            | YES  | YES  | YES  |
+
+##### --音频属性
+
+| 属性     | 值                 | 描述                                                        |
+| :------- | :----------------- | :---------------------------------------------------------- |
+| autoplay | autoplay           | 如果出现该属性，则音频在就绪后马上播放。                    |
+| controls | controls           | 如果出现该属性，则向用户显示音频控件（比如播放/暂停按钮）。 |
+| loop     | loop               | 如果出现该属性，则每当音频结束时重新开始播放。              |
+| muted    | muted              | 如果出现该属性，则音频输出为静音。                          |
+| preload  | auto metadata none | 规定当网页加载时，音频是否默认被加载以及如何被加载。        |
+| src      | *URL*              | 规定音频文件的 URL。                                        |
+
+#### `<video>`-视频
+
+**语法**
+
+```html
+<video src="#" controls="controls"></video>
+<!-- #是文件地址-->
+```
+
+**视频格式与浏览器的支持**
+
+当前， `<video>` 元素支持三种视频格式： MP4, WebM, 和 Ogg:(最好使用mp4)
+
+| 浏览器            | MP4                  | WebM | Ogg  |
+| :---------------- | :------------------- | :--- | :--- |
+| Internet Explorer | YES                  | NO   | NO   |
+| Chrome            | YES                  | YES  | YES  |
+| Firefox           | YES                  | YES  | YES  |
+| Safari            | YES                  | NO   | NO   |
+| Opera             | YES (从 Opera 25 起) | YES  | YES  |
+
+- MP4 = 带有 H.264 视频编码和 AAC 音频编码的 MPEG 4 文件
+- WebM = 带有 VP8 视频编码和 Vorbis 音频编码的 WebM 文件
+- Ogg = 带有 Theora 视频编码和 Vorbis 音频编码的 Ogg 文件
+
+> 判断是否支持某种视频格式
+
+```html
+<video controls="controls"width="300">
+	<source src="move.ogg" type="video/ogg">
+	<source src="move.mp4"type="video/mp4">
+您的浏览器暂不支持 <video>标签播放视频
+</video>
+```
+
+##### --视频属性
+
+| 属性     | 值                       | 描述                                                         |
+| :------- | :----------------------- | :----------------------------------------------------------- |
+| autoplay | autoplay                 | 如果出现该属性，则视频在就绪后马上播放。                     |
+| controls | controls                 | 如果出现该属性，则向用户显示控件，比如播放按钮。             |
+| height   | pixels                   | 设置视频播放器的高度。                                       |
+| loop     | loop                     | 如果出现该属性，则当媒介文件完成播放后再次开始播放。         |
+| muted    | muted                    | 如果出现该属性，视频的音频输出为静音。                       |
+| poster   | URL                      | 规定视频正在下载时显示的图像，直到用户点击播放按钮。         |
+| preload  | `auto` `metadata` `none` | 如果出现该属性，则视频在页面加载时进行加载，并预备播放。如果使用 "autoplay"，则忽略该属性。 |
+| src      | URL                      | 要播放的视频的 URL。                                         |
+| width    | pixels                   | 设置视频播放器的宽度。                                       |
+
+### 3.`input`类型
+
+| 属性值        | 说明                        |
+| ------------- | --------------------------- |
+| type="email"  | 限制用户输入必须为Email类型 |
+| type="url"    | 限制用户输入必须为URL类型   |
+| type="date"   | 限制用户输入必须为日期类型  |
+| type="time"   | 限制用户输入必须为时间类型  |
+| type="month"  | 限制用户输入必须为月类型    |
+| type="week"   | 限制用户输入必须为周类型    |
+| type="number" | 限制用户输入必须为数字类型  |
+| type="tel"    | 手机号码                    |
+| type="search" | 搜索框                      |
+| type="color"  | 生成一个颜色选择表单        |
+
+### 4.表单属性
+
+[新增表单属性](https://www.runoob.com/html/html5-form-attributes.html)
+
+| 属性            | 值        | 说明                                                         |
+| --------------- | --------- | ------------------------------------------------------------ |
+| required        | required  | 表单拥有该属性表示其内容不能为空，必填                       |
+| **placeholder** | 提示文本  | 表单的提示信息，存在默认值将不显示                           |
+| autofocus       | autofocus | 自动聚焦属性，页面加载完成自动聚焦到指定表单                 |
+| autocomplete    | off/ on   | 当用户在字段开始键入时，浏览器基于之前键入过的值，应该显示出在字段中填写的选项。<br>默认已经打开，如 `autocomplete="on"`，关闭`autocomplete ="off"`需要放在表单内，同时加上name属性，同时成功提交。 |
+| **multiple**    | multiple  | 可以多选文件提交                                             |
+
+
+
 # 四、项目
 
 ## 1.学成在线官网
