@@ -1086,6 +1086,7 @@ class MyJFrame extends JFrame{
 
         //获得一个容器
         Container container=this.getContentPane();
+        /*这行代码的作用是获取当前 JFrame 对象的内容面板，并将其引用保存在 container 变量中，以便可以在后续的代码中方便地使用这个内容面板来添加其他组件。*/
         container.setBackground(Color.YELLOW);
 
         //关闭窗口
@@ -1236,6 +1237,312 @@ public class ImageIconDemo extends JFrame {
 
     public static void main(String[] args) {
         new ImageIconDemo();
+    }
+}
+```
+
+## 2.4 面版
+
+```java
+//JPane
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class JPaneDemo extends JFrame {
+    public JPaneDemo(){
+        Container container=this.getContentPane();
+
+        container.setLayout(new GridLayout(2,1,10,10));  //hgap是左右间距,vgap是上下间距
+
+        JPanel panel1=new JPanel(new GridLayout(1,3));
+        JPanel panel2=new JPanel(new GridLayout(1,2));
+        JPanel panel3=new JPanel(new GridLayout(2,1));
+        JPanel panel4=new JPanel(new GridLayout(3,2));
+
+        panel1.add(new JButton("1"));
+        panel1.add(new JButton("1"));
+        panel1.add(new JButton("1"));
+        panel2.add(new JButton("2"));
+        panel2.add(new JButton("2"));
+        panel3.add(new JButton("3"));
+        panel3.add(new JButton("3"));
+        panel4.add(new JButton("4"));
+        panel4.add(new JButton("4"));
+        panel4.add(new JButton("4"));
+        panel4.add(new JButton("4"));
+        panel4.add(new JButton("4"));
+        panel4.add(new JButton("4"));
+
+        container.add(panel1);
+        container.add(panel2);
+        container.add(panel3);
+        container.add(panel4);
+
+        this.setVisible(true);
+        this.setSize(500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+    public static void main(String[] args) {
+        new JPaneDemo();
+    }
+}
+```
+
+## 2.5 按钮
+
+### 1.图片按钮
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
+public class JButtonDemo01 extends JFrame {
+    public JButtonDemo01(){
+        Container container=this.getContentPane();
+        //将一个图片变为图标
+        URL resource=JButtonDemo01.class.getResource("1.png");
+        Icon icon=new ImageIcon(resource);
+
+        //把这个图标放在按钮上
+        JButton button=new JButton();
+        button.setIcon(icon);
+        button.setToolTipText("图片按钮");
+
+        //add
+        container.add(button);
+
+        this.setVisible(true);
+        this.setSize(500,300);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JButtonDemo01();
+    }
+}
+```
+
+### 2.单选框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
+public class JButtonDemo01 extends JFrame {
+    public JButtonDemo01(){
+        Container container=this.getContentPane();
+
+        //单选框
+        JRadioButton jButton1=new JRadioButton("jButton1");
+        JRadioButton jButton2=new JRadioButton("jButton2");
+        JRadioButton jButton3=new JRadioButton("jButton3");
+
+        //分组,使得单选框只能选一个
+        ButtonGroup bg=new ButtonGroup();
+        bg.add(jButton1);
+        bg.add(jButton2);
+        bg.add(jButton3);
+
+        container.add(jButton1,BorderLayout.CENTER);
+        container.add(jButton2,BorderLayout.SOUTH);
+        container.add(jButton3,BorderLayout.NORTH);
+
+        this.setVisible(true);
+        this.setSize(500,300);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JButtonDemo01();
+    }
+}
+```
+
+### 3.多选框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
+public class JButtonDemo01 extends JFrame {
+    public JButtonDemo01(){
+        Container container=this.getContentPane();
+
+        JCheckBox jCheckBox1=new JCheckBox("1");
+        JCheckBox jCheckBox2=new JCheckBox("2");
+        JCheckBox jCheckBox3=new JCheckBox("3");
+
+        container.add(jCheckBox1,BorderLayout.CENTER);
+        container.add(jCheckBox2,BorderLayout.SOUTH);
+        container.add(jCheckBox3,BorderLayout.NORTH);
+
+        this.setVisible(true);
+        this.setSize(500,300);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JButtonDemo01();
+    }
+}
+```
+
+### 4.下拉框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Text01 extends JFrame {
+    public Text01(){
+        Container container=this.getContentPane();
+        JComboBox status=new JComboBox();
+
+        status.addItem(null);
+        status.addItem("正在热映");
+        status.addItem("已下架");
+        status.addItem("待上映");
+
+        container.add(status);
+        this.setVisible(true);
+        this.setBounds(100,100,500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new Text01();
+    }
+}
+```
+
+### 5.列表框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Text01 extends JFrame {
+    public Text01(){
+        Container container=this.getContentPane();
+
+        //生成列表的内容
+        String[] s={"jianbing","shibendan","nie"};
+        //列表中需要放入内容
+        JList jList=new JList(s);
+        container.add(jList);
+
+        this.setVisible(true);
+        this.setBounds(100,100,500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new Text01();
+    }
+}
+```
+
+### 6.文本框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Text01 extends JFrame {
+    public Text01(){
+        Container container=this.getContentPane();
+
+        JTextField textField=new JTextField("hello");
+        JTextField textField1=new JTextField("world",20);
+
+        container.add(textField,BorderLayout.NORTH);
+        container.add(textField1,BorderLayout.SOUTH);
+
+        this.setVisible(true);
+        this.setBounds(100,100,500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new Text01();
+    }
+}
+```
+
+### 7.密码框
+
+```java
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Text01 extends JFrame {
+    public Text01(){
+        Container container=this.getContentPane();
+
+        JPasswordField jPasswordField=new JPasswordField();
+        jPasswordField.setEchoChar('*');
+        container.add(jPasswordField);
+
+        this.setVisible(true);
+        this.setBounds(100,100,500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new Text01();
+    }
+}
+```
+
+
+
+### 8.文本域
+
+```java
+//JScrollPane
+package GUI;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class JScrollDemo extends JFrame {
+    public JScrollDemo(){
+        Container container=this.getContentPane();
+
+        //文本域
+        JTextArea textArea=new JTextArea(20,50);
+        textArea.setText("你好呀");
+
+        //Scroll面板
+        JScrollPane scrollPane=new JScrollPane(textArea);
+        container.add(scrollPane);
+
+        this.setVisible(true);
+        this.setBounds(100,100,300,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JScrollDemo();
     }
 }
 ```

@@ -4137,9 +4137,63 @@ CSS `filter` 属性用为元素添加可视效果 (例如：模糊与饱和度) 
 
 ## 7.CSS3 过渡
 
+过渡(transition)是CSS3中具有颠覆性的特征之一，我们可以在不使用 Flash 动画或JavaScript 的情况下，当元素从一种样式变换为另一种样式时为元素添加效果。
+
+过渡动画:是从一个状态渐渐的过渡到另外一个状态 ，可以让我们页面更好看，更动感十足，虽然 低版本浏览器不支持(ie9以下版本 ) 但是不会影响页面布局。
+
+我们现在经常和 `:hover` 一起搭配使用。
+
+**语法**
+
+```css
+transition:要过渡的属性 花费时间 运动曲线 何时开始;
+```
+
+1.属性：想要变化的 css 属性，宽度高度 背景颜色 内外边距都可以 。如果想要所有的属性都变化过渡，写一个all就可以。
+
+2.花费时间：单位是秒(必须写单位 )比如 0.5s。
+
+3.运动曲线：默认是ease(可以省略)。
+
+4.何时开始：单位是秒(必须写单位)可以设置延迟触发时间 默认是 0s(可以省略)。
+
+> 实例
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>demo1</title>
+    <meta charset="utf-8">
+    <style>
+       div{
+        width: 100px;
+        height: 100px;
+        background-color: pink;
+       }
+       div:hover{
+        width: 300px;
+        transition: width 1s ease 0s;    /*核心语句*/
+        /*
+           如果想要多个属性变化,可以加逗号
+           如:transition: width 1s ease 0s,height 1s ease 0s;
+           如果想要全部属性变化,则加all
+           如:transition: all 1s;
+        */
+       }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
+```
 
 
-## 6.CSS3 其他特性
+
+
+
+## 8.CSS3 其他特性
 
 ### calc 函数
 
