@@ -6,7 +6,7 @@
 
 [HTML 参考手册- (HTML5 标准)](https://www.runoob.com/tags/html-reference.html)
 
- [CSS教程](https://www.runoob.com/css/css-tutorial.html)
+[CSS教程](https://www.runoob.com/css/css-tutorial.html)
 
 [CSS 参考手册](https://www.runoob.com/cssref/css-reference.html)
 
@@ -1838,12 +1838,6 @@ URL 不能包含空格。URL 编码通常使用 + 来替换空格。
 | u           | Underlined                | 下划线（文本）                 |
 | ul          | Unordered List            | 不排序列表                     |
 | var         | Variable                  | 变量（文本）                   |
-
-
-
-
-
-
 
 # 三、HTML5
 

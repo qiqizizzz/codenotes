@@ -7,7 +7,7 @@
 1. 布局定位属性:display/position/float/clear /visibility/overflow(建议 display第一个写,毕竟关系到模式)
 2. 自身属性 :width/height/margin/padding/border/background
 3. 文本属性 : color / font / text-decoration/text-align/vertical-align/white- space / break-word
-4. 其他属性 ( CSS3 ): content /cursor / border-radius/ box-shadow / text-shadow/ backaround:linear-gradient..
+4. 其他属性 (CSS3): content /cursor / border-radius/ box-shadow / text-shadow/ backaround:linear-gradient..
 
 ## 1.CSS 语法
 
@@ -1752,7 +1752,7 @@ a:hover{
 
 
 
-### 3.:focus伪类选择器
+### 3.`:focus`伪类选择器
 
 :focus伪类选择器用于选取获得焦点的表单元素
 
@@ -1766,7 +1766,7 @@ input:focus{
 
 
 
-### **4.CSS :first-child 伪类**
+### **4.CSS `:first-child` 伪类**
 
 您可以使用 :first-child 伪类来选择父元素的第一个子元素。
 
@@ -1805,7 +1805,7 @@ p:first-child i
 }
 ```
 
-### **5.CSS :lang 伪类**
+### **5.CSS `:lang` 伪类**
 
 :lang 伪类使你有能力为不同的语言定义特殊的规则
 
@@ -1867,7 +1867,7 @@ CSS 伪元素是用来添加一些选择器的特殊效果。
 
 常用的 CSS 伪元素有 `::before`、`::after`、`::first-line`、`::first-letter` 等。
 
-**1.语法**
+### **1.语法**
 
 伪元素的语法：
 
@@ -1885,7 +1885,7 @@ selector.class::pseudo-element {
 }
 ```
 
-**2.:first-line 伪元素**
+### **2.`:first-line` 伪元素**
 
 "first-line" 伪元素用于向文本的首行设置特殊样式。
 
@@ -1914,7 +1914,7 @@ p:first-line
 - line-height
 - clear
 
-**3.:first-letter 伪元素**
+### **3.`:first-letter` 伪元素**
 
 "first-letter" 伪元素用于向文本的首字母设置特殊样式：
 
@@ -1943,7 +1943,7 @@ p:first-letter
 - float
 - clear
 
-**4.伪元素和CSS类**
+### **4.伪元素和CSS类**
 
 伪元素可以结合CSS类： 
 
@@ -1955,7 +1955,7 @@ p.article:first-letter {color:#ff0000;}
 
 上面的例子会使所有 class 为 article 的段落的首字母变为红色。
 
-**5.多个伪元素**
+### **5.多个伪元素**
 
 可以结合多个伪元素来使用。
 
@@ -1976,7 +1976,7 @@ p:first-line
 }
 ```
 
-**6.CSS - :before 伪元素**
+### **6.CSS  `:before` 伪元素**
 
 ":before" 伪元素可以在元素的内容前面插入新内容。
 
@@ -1989,7 +1989,7 @@ h1:before
 }
 ```
 
-**7.CSS - :after 伪元素**
+### **7.CSS  `:after` 伪元素**
 
 ":after" 伪元素可以在元素的内容之后插入新内容。
 
@@ -2010,7 +2010,7 @@ h1:after
 | :visited          | a:visited      | 选择所有访问过的链接                              |
 | :active           | a:active       | 选择正在活动链接                                  |
 | :hover            | a:hover        | 把鼠标放在链接上的状态                            |
-| :focus            | input:focus    | 选择元素输入后具有焦点                            |
+| **:focus**        | input:focus    | 选择元素输入后具有焦点                            |
 | :first-letter     | p:first-letter | 选择每个`<p>` 元素的第一个字母                    |
 | :first-line       | p:first-line   | 选择每个`<p>` 元素的第一行                        |
 | :first-child      | p:first-child  | 选择器匹配属于任意元素的第一个子元素的 `<p>` 元素 |

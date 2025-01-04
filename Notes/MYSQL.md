@@ -739,6 +739,13 @@ CREATE TABLE Customers (
 );
 ```
 
+```mysql
+alter table fruit1 alter column Stock set default(100);
+/*为表fruit1中的stock列添加默认值为100*/
+```
+
+
+
 #### 7. INDEX
 
 用于快速访问数据库表中的数据。
@@ -1040,6 +1047,45 @@ SET[SESSiON|GLOBAL] TRANSACTION ISOLATION LEVEL {READ UNCOMMITTED | READ COMMITT
 ```
 
 注意:事务隔离级别越高、数据越安全，但是性能越低。
+
+### 事物原理
+
+- `redo log`
+
+​		重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的持久性。
+
+​		该日志文件由两部分组成：重做日志缓冲(redolog buffer)以及重做日志文件(redolog file),前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中,用于在刷新脏页到磁盘,发生错误时,进行数据恢复使用。
+
+- `undo log`
+
+  回滚日志，用于记录数据被修改前的信息，作用包含两个:提供回滚 和 MVCC(多版本并发控制)。
+
+​		undo log和redo log记录物理日志不一样，它是逻辑日志。可以认为当delete一条记录时，undo log中会记录一条对应的insert记录，反之亦然，当update一条记录时，它记录一条对应相反的update记录。当执行rolback时，就可以从undo log中的逻辑记录读取到相应的内容并进行回滚。
+
+​		Undo log销毁：undolog在事务执行时产生，事务提交时，并不会立即删除undolog，因为这些日志可能还用于MVCC,
+
+​		Undo log存储：undolog采用段的方式进行管理和记录，存放在前面介绍的 rollbacksegment 回滚段中，内部包含1024个undolog
+segment.
+
+> MVCC
+
+MVCC-基本概念
+
+- 当前读
+
+​		读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。对于我们日常的操作，如
+select.... lock in share mode(共享锁)，select.... for update、update、insert、delete(排他锁)都是一种当前读。
+
+- 快照读
+
+​		简单的select(不加锁)就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁，是非阻塞读。
+​		Read committed:每次select，都生成一个快照读。
+​		Repeatable Read:开启事务后第一个select语句才是快照读的地方。
+​		Serializable:快照读会退化为当前读。
+
+- MVCC
+
+  全称 Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本，使得读写操作没有冲突，快照读为MySQL实现。MVCC提供了一个非阻塞读功能。MVCC的具体实现，还需要依赖于数据库记录中的三个隐式字段、undolog日志、readView。
 
 # 二、MYSQL
 
@@ -2230,14 +2276,19 @@ DROP TRIGGER [schema_name.]trigger_name;-- 如果没有指定 schema_name,默认
 ### 1.插入数据触发器
 
 ```sql
-create trigger tb_user_insert_trigger
-	after insert on tb_user for each row
+/*4．创建一个触发器，如果新注册的消费者用户用户名已经存在，则不允许该用户注册，并提示：“该用户已经存在，请更改用户名后重新注册”。*/
+create trigger b1
+    before insert on consumer for each row
 begin
-	insert into user_logs(id, operation, operate_time, operate_id, operate_params) VALUES
-	(null, 'insert', 
-     now(),new.id,concat('插入的数据为:id=',new.id,',name=',new.name,',phone=',NEW.phone,
-     ',email=',new.email,',profession=',new.profession));
+    declare count int;
+    select count(*) into count from consumer where UserName=new.UserName;
+
+    if count>0 then
+        signal sqlstate '45000' set message_text ='该用户已经存在，请更改用户名后重新注册';
+    end if;
 end;
+/*测试数据*/
+insert into consumer values ('00000006','qiqi','wq17','柒柒','女','15979444602','江西','qiiqi','M0000001');
 ```
 
 ### 2.修改数据触发器
@@ -2258,14 +2309,16 @@ end;
 ### 3.删除数据触发器
 
 ```sql
-create trigger tb_user_insert_trigger
-	after delete on tb_user for each row
-begin
-	insert into user_logs(id, operation, operate_time, operate_id, operate_params) VALUES
-	(null, 'delete', 
-     now(),new.id,concat('删除之前的数据为:id=',old.id,',name=',old.name,',phone=',old.phone,',
-     email=',old.email,',profession=',old.profession));
-end;
+/*7．创建一个触发器，当从水果表中删除一条记录时，其对应的订单也一起删除。*/
+create trigger t4 after
+    delete on fruit for each row
+    begin
+        delete from orders
+        where orders.FruitID=old.FruitID;
+    end;
+    
+/*测试数据*/
+delete from fruit where FruitID='F0001';
 ```
 
 # 七、锁

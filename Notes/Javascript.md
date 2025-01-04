@@ -411,7 +411,7 @@ function myFunction() {
 
 **`innerHTML` = "段落已修改。"** 是用于修改元素的 HTML 内容(`innerHTML`)的 JavaScript 代码。
 
-**4.使用console.log()**
+### **4.使用console.log()**
 
 如果您的浏览器支持调试，你可以使用 **console.log()** 方法在浏览器中显示 JavaScript 值。
 
@@ -467,8 +467,6 @@ JavaScript 同样保留了一些关键字，这些关键字在当前的语言版
 | do       | import     | short      | while        |
 | double   | in         | static     | with         |
 
-
-
 ## 5.JavaScript 对象
 
 **1.创建对象**
@@ -484,10 +482,11 @@ var person={firstname:"John", lastname:"Doe", id:5566};
 空格和折行无关紧要。声明可横跨多行：
 
 ```js
-var person={
-firstname : "John",
-lastname : "Doe",
-id    : 5566
+var person=
+{
+	firstname : "John",
+	lastname  : "Doe",
+	id        : 5566
 };
 ```
 
@@ -1075,4 +1074,411 @@ function myFunction() {
 
 # 二、Web API
 
-## 1.
+作用: 使用 JS 去操作 html和浏览器
+
+分类:DOM(文档对象模型)、BOM(浏览器对象模型)
+
+## 1.概念
+
+### 1.1 DOM
+
+DOM(Document Object Model--文档对象模型)是用来呈现以及与任意 HTML 或 XML文档交互的API。
+
+DOM是浏览器提供的一套专门用来操作网页内容的功能。
+
+> DOM作用
+
+开发网页内容特效和实现用户交互。
+
+### 1.2 DOM树概念
+
+将 HTML 文档以树状结构直观的表现出来，我们称之为文档树或 DOM 树。
+
+- 描述网页内容关系的名词
+- 作用:文档树直观的体现了标签与标签之间的关系
+
+### 1.3 DOM对象
+
+浏览器根据html标签生成的JS对象
+
+- 所有的标签属性都可以在这个对象上面找到
+- 修改这个对象的属性会自动映射到标签身上
+
+> DOM的核心思想
+
+把网页内容当做对象来处理
+
+> document 对象
+
+- 是 DOM 里提供的一个对象
+- 所以它提供的属性和方法都是用来访问和操作网页内容的
+- 例:`document.write()`
+- 网页所有内容都在`document`里面
+
+## 2.获取DOM元素
+
+**1.选择匹配的第一个元素**
+
+**1.语法:**
+
+```js
+document.querySelector('css选择器')
+```
+
+**参数:**
+
+包含一个或多个有效的CSS选择器 **字符串**
+
+**返回值:**
+
+CSS选择器匹配的第一个元素,一个 `HTMLElement`对象。
+
+如果没有匹配到，则返回null。
+
+**2.选择匹配的多个元素**
+
+**语法:**
+
+```js
+document.querySelectorAll('css选择器')
+```
+
+**参数:**
+
+包含一个或多个有效的CSS选择器 字符串
+
+**返回值:**
+
+CSS选择器匹配的`NodeList` 对象集合
+
+**例如:**
+
+```js
+document.querySelectorAll('ul li')
+```
+
+得到的是一个**伪数组**:
+
+- 有长度有索引号的数组
+- 但是没有 pop()push()等数组方法
+
+想要得到里面的每一个对象，则需要遍历(for)的方式获得。
+
+> 注意事项
+
+哪怕只有一个元素，通过`querySelectAll()`获取过来的也是一个伪数组，里面只有一个元素而已
+
+**3.其他获取DOM元素的方法**
+
+```js
+//根据id获取一个元素
+document.getElementById('nav')
+//根据标签获取一类元素 获取页面所有div
+document.getElementsByTagName('div')
+//根据类名获取元素 获取页面所有类名为w的
+document.getElementsByClassName('w')
+```
+
+## 3.DOM修改元素内容
+
+DOM对象都是根据标签生成的,所以操作标签,本质上就是操作DOM对象，就是操作对象使用的点语法。
+
+如果想要修改标签元素的里面的内容，则可以使用如下几种方式:
+
+- `对象.innerText` 属性
+- `对象.innerHTML` 属性
+
+**1.元素`.innerText` 属性**
+
+- 将文本内容添加/更新到任意标签位置
+- 显示**纯文本**，不解析标签
+
+```js
+<script>
+      //获取元素
+      const box=document.querySelector('.box1')
+      //修改文字内容
+      console.log(box.innerText)//获取文字内容
+      //修改文字内容 对象.innerText 属性
+      box.innerText='Hello World'
+</script>
+```
+
+**2.元素`.innerHTML` 属性**
+
+- 将文本内容添加/更新到任意标签位置
+- 会**解析标签**，多标签建议使用模板字符
+
+```js
+<script>
+      //获取元素
+      const box=document.querySelector('.box1')
+      //修改文字内容
+      console.log(box.innerHTML)//获取文字内容
+      //修改文字内容 对象.innerHTML 属性
+      box.innerHTML='<strong>Hello World</strong>'
+</script>
+```
+
+> 实例（通过随机数来替换一等奖二等奖三等奖的人员）
+
+```js
+<body>
+<div class="box1">
+    <span id="one">???</span>
+</div>
+<script>
+	//声明数组
+	const personArr=['李华','张三','李四','王五']
+	//获取随机数下标
+	const random=Math.floor(Math.random()*personArr.length)
+	//获取one元素
+	const one=document.querySelector('#one')
+	//把名字给one
+	one.innerHTML=personArr[random]
+	//删除这个名字
+	personArr.splice(random,1)
+	console.log(personArr)
+	......
+<script>
+</body>
+```
+
+## 4.DOM修改元素属性
+
+### 1.修改标签元素属性
+
+还可以通过 JS 设置/修改标签元素属性，比如通过`src`更换图片。最常见的属性比如:`href`、`title`、`src` 等。
+
+**语法:**
+
+```js
+对象.属性 = 值
+```
+
+> 实例
+
+```js
+<body>
+<img src="./images/1.webp" alt="">
+<script>
+	const img=document.querySelector('img')
+
+	img.src='./images/2.webp'
+	img.title='none'
+</script>
+</body>
+```
+
+### 2.修改元素样式属性
+
+**1.通过style属性操作CSS**
+
+- 语法
+
+```js
+对象.style.样式属性=值
+```
+
+> 实例
+
+```js
+const box=document.querySelector('.box')
+//修改元素样式
+box.style.width='200px'
+//多组单词的选取 用小驼峰命名法
+box.style.marginTop='15px'
+box.style.backgroundColor='qiqizi'
+```
+
+> 小驼峰命名法的特点
+>
+> 1. **首字母小写**：第一个单词的首字母始终是小写。
+> 2. **单词首字母大写**：从第二个单词开始，每个单词的首字母都大写。
+> 3. **没有分隔符**：单词之间没有下划线或其他分隔符。
+
+**2.通过类名操作CSS**
+
+- 语法:
+
+```js
+// active 是一个css类名
+元素.className ='active'
+```
+
+> 注意:
+
+由于`class`是关键字,所以使用`className`去代替
+
+`className`是使用新值**换**旧值,如果需要添加一个类,需要保留之前的类名
+
+> 实例
+
+```js
+//1.获取元素
+const div = document.querySelector('div')
+// 2.添加类名
+div.className ='box'
+//box和div都是类名
+```
+
+**3.通过 `classList` 操作类控制CSS**
+
+为了解决`className`容易覆盖以前的类名，我们可以通过`classList`方式追加和删除类名
+
+- 语法:
+
+```js
+//追加一个类
+元素.classList.add('类名')
+//删除一个类
+元素.classList.remove('类名')
+//切换一个类
+元素.classList.toggle('类名')
+```
+
+> 实例
+
+```js
+const box = document.querySelector('.box')
+//修改样式
+box.classList.add('active')
+```
+
+### 3.操作表单元素属性
+
+表单很多情况，也需要修改属性，比如点击眼睛，可以看到密码，本质是把表单类型转换为文本框
+正常的有属性有取值的，跟其他的标签属性没有任何区别
+
+>获取:DOM对象.属性名
+>
+>设置:DOM对象.属性名=新值
+
+```js
+表单.value ='用户名'
+表单.type ='password'
+```
+
+> 实例
+
+```js
+//获取元素
+const uname=document.querySelector('input')
+uname.value='我是柒柒子';  //更改属性的值
+uname.type='password'    //更改样式
+```
+
+### 4.自定义属性
+
+标准属性:标签天生自带的属性 比如class id title等,可以直接使用点语法操作比如: disabled、checked、selected
+
+自定义属性:
+
+- 在html5中推出来了专门的data-自定义属性
+- 在标签上一律以data-开头
+- 在DOM对象上一律以dataset对象方式获取
+
+```js
+<body>
+	<div class="box" data-id="10">盒子</div>
+	<script>
+		const box = document.querySelector('.box')
+		console.log(box.dataset.id)
+</script>
+</body>
+```
+
+## 5.函数
+
+### 1.定时器-间歇函数
+
+- 目标:能够说出定时器函数在开发中的使用场景
+- 网页中经常会需要一种功能:每隔一段时间需要自动执行一段代码，不需要我们手动去触发
+- 例如:网页中的倒计时
+- 要实现这种需求，需要定时器函数
+
+```js
+let n=setInterval(函数，间隔时间)   //开启定时器
+clearInterval(n); //关闭定时器
+```
+
+> 实例
+
+```js
+function fn(){
+console.log('一秒执行一次')
+}
+// setInterval(函数名,间隔时间)函数名不要加小括号
+setInterval(fn, 1000)
+```
+
+#### 阅读注册协议
+
+阅读注册协议
+
+需求:按钮5秒之后才可以使用
+
+分析:
+
+①:开始先把按钮禁用(disabled 属性)
+
+②:一定要获取元素
+
+③:函数内处理逻辑
+
+- 秒数开始减减
+- 按钮里面的文字跟着一起变化
+- 如果秒数等于0停止定时器，里面文字变为同意，最后按钮可以点击
+
+```js
+<button class="btn" disabled>我已经阅读用户协议(5)</button>
+<script>
+    //获取元素
+    const btn=document.querySelector('btn')
+	//console.log(btn.innerHTML) button按钮用innerHTML
+
+	//倒计时
+	let i=5
+    //开启定时器
+    let n=setInteval(function(){
+        i--
+        btn.innerHTML=`我已经阅读用户协议(${i})`
+        if(i===0){
+            clearInterval(n) //关闭定时器
+            //定时器停了，允许开按钮
+            btn.disabled=false
+            btn.innerHTML='同意'
+        }
+    },1000)
+</script>
+```
+
+## 6.事件
+
+### 1.事件监听
+
+**语法:**
+
+```js
+元素对象.addEventListener('事件类型’,要执行的函数)
+```
+
+事件监听三要素:
+
+- 事件源: 那个dom元素被事件触发了，要获取dom元素
+- 事件类型:用什么方式触发，比如鼠标单击 click、鼠标经过 mouseover等
+- 事件调用的函数:要做什么事
+
+> 实例
+
+```js
+<button>按钮</button)
+<script>
+	const btn = document.querySelector('.btn')
+	//修改元素样式
+	btn.addEventListener('click',function(){
+	alert('点击了~')
+})
+</script>
+```
+
