@@ -486,7 +486,7 @@ SELECT 字段列表 FROM 表名 LIMIT 起始索引,查询记录数;
 select name,salary,age from emp limit 2,10;
 ```
 
-注意
+**注意**：
 
 - 起始索引从0开始，起始索引=(查询页码-1)*每页显示记录数。
 - 分页查询是数据库的方言，不同的数据库有不同的实现，MySQL中是LIMIT。
@@ -515,7 +515,7 @@ LIMIT
 
 ## 6.DCL语句
 
-###　DCL-管理用户
+### DCL-管理用户
 
 **1．查询用户**
 
@@ -1003,13 +1003,20 @@ SELECT @@autocommit;
 SET @@autocommit = 0;
 ```
 
-**2.提交事务**
+**2.开始事务**
+
+```mysql
+START TRANSACTION;  -- 开始事务
+-- 或者Begin;
+```
+
+**3.提交事务**
 
 ```mysql
 COMMIT;
 ```
 
-**3.回滚事务**
+**4.回滚事务**
 
 ```mysql
 ROLLBACK;
@@ -1708,11 +1715,7 @@ DROP VIEW [IF EXISTS] 视图名称 [,视图名称]...
 
 ## 3.检查选项CASCADED 和 LOCAL
 
-当使用WITH CHECKOPTION子句创建视图时，MVSOL会通过视图检查正在更改的每个行，例如 插入，更新，删除，以使其符合视图的
-
-定义。MySOL允许基于另一个视图创建视图，它还会检查依赖视图中的规则以保持一致性。为了确定检查的范围，mysql提供了两个选
-
-:`CASCADED` 和 `LOCAL`，默认值为 `CASCADED`。
+当使用WITH CHECKOPTION子句创建视图时，MYSQL会通过视图检查正在更改的每个行，例如 插入，更新，删除，以使其符合视图的定义。MySQL允许基于另一个视图创建视图，它还会检查依赖视图中的规则以保持一致性。为了确定检查的范围，mysql提供了两个选项:`CASCADED` 和 `LOCAL`，默认值为 `CASCADED`。
 
 **1.`CASCADED` :**
 
